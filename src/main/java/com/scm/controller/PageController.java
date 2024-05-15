@@ -4,13 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.scm.entities.User;
 import com.scm.forms.UserForm;
+import com.scm.helpers.Message;
+import com.scm.helpers.MessageType;
 import com.scm.services.UserService;
+
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 @Controller
 public class PageController {
@@ -52,28 +58,44 @@ public class PageController {
     // processing register
 
     @PostMapping("/do-register")
-    public String processRegister(@ModelAttribute UserForm userForm) {
+    public String processRegister(@Valid @ModelAttribute UserForm userForm, BindingResult rBindingResult,
+            HttpSession session) {
         // fetch data
         // userForm
         // validate form data
+
+        if (rBindingResult.hasErrors())
+            return "register";
+
         // save to database
 
         // userservice
         // UserForm ----> User
-        User user = User.builder()
-                .name(userForm.getName())
-                .email(userForm.getEmail())
-                .password(userForm.getPassword())
-                .phoneNumber(userForm.getPhoneNumber())
-                .about(userForm.getAbout())
-                .profilePic(profilePic)
-                .build();
+        // User user = User.builder()
+        // .name(userForm.getName())
+        // .email(userForm.getEmail())
+        // .password(userForm.getPassword())
+        // .phoneNumber(userForm.getPhoneNumber())
+        // .about(userForm.getAbout())
+        // .profilePic(profilePic)
+        // .build();
+
+        User user = new User();
+        user.setName(userForm.getName());
+        user.setEmail(userForm.getEmail());
+        user.setPassword(userForm.getPassword());
+        user.setAbout(userForm.getAbout());
+        user.setPhoneNumber(userForm.getPhoneNumber());
+        user.setProfilePic(profilePic);
 
         User savedUser = userService.saveUser(user);
 
-        System.out.println("User Saved : " + savedUser);
+        // message add
 
-        // message
+        Message message = Message.builder().content("Registration successful").type(MessageType.green).build();
+
+        session.setAttribute("message", message);
+
         // redirect to login
 
         return "redirect:/register";

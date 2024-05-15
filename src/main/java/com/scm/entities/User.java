@@ -3,6 +3,8 @@ package com.scm.entities;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -17,7 +19,6 @@ import java.util.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Table(name = "users")
 public class User {
 
@@ -40,6 +41,7 @@ public class User {
     private Boolean emailVerified = false;
     private Boolean phoneVerified = false;
 
+    @Enumerated(value = EnumType.STRING)
     // SELF, GOOGLE, FACEBOOK, LINKEDIN
     private Provider providers = Provider.SELF;
     private String providerUserId;
