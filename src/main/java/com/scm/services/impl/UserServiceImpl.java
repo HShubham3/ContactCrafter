@@ -35,7 +35,9 @@ public class UserServiceImpl implements UserService {
         // password encode
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        // user.setPassword(password);
+        //  set the default user role
+
+        user.setRoleList(List.of("ROLE_USER"));
 
         return userRepo.save(user);
     }
